@@ -6,28 +6,18 @@ This repository contains the StartOS wrapper for [Canary](https://github.com/sch
 
 To build the package, you need:
 
+- Node.js v22 LTS
 - Docker with buildx support
-- [yq](https://github.com/mikefarah/yq) - YAML processor
-- [Deno](https://deno.land/) - JavaScript/TypeScript runtime
-- [start-sdk](https://github.com/Start9Labs/start-os) - StartOS SDK
+- [start-cli](https://start9labs.github.io/start-cli) - StartOS CLI
 
 ### Installing Dependencies
 
 ```bash
-# Install yq (macOS)
-brew install yq
+# Install Node.js (macOS)
+brew install node@22
 
-# Install yq (Ubuntu/Debian)
-snap install yq
-
-# Install Deno
-curl -fsSL https://deno.land/x/install/install.sh | sh
-
-# Install start-sdk (from start-os repo)
-git clone -b latest --recursive https://github.com/Start9Labs/start-os.git
-cd start-os/core
-./install-sdk.sh
-start-sdk init
+# Install start-cli
+curl -fsSL https://start9labs.github.io/start-cli | sh
 ```
 
 ## Building
@@ -37,11 +27,12 @@ start-sdk init
 make
 
 # Build for specific architecture only
+make x86_64   # x86_64 only
+make aarch64  # aarch64 only
+
+# Legacy aliases also work
 make x86   # x86_64 only
 make arm   # aarch64 only
-
-# Verify the package
-make verify
 ```
 
 The resulting `canary.s9pk` file can be sideloaded into StartOS.
@@ -51,7 +42,7 @@ The resulting `canary.s9pk` file can be sideloaded into StartOS.
 ### Option 1: Via CLI
 
 ```bash
-# Configure your StartOS server in ~/.embassy/config.yaml
+# Configure your StartOS server in ~/.startos/config.yaml
 # host: http://your-server.local
 
 make install
@@ -67,64 +58,71 @@ make install
 
 ```
 canary-startos/
-├── Dockerfile          # Multi-stage build (clones upstream, builds backend+frontend)
-├── Makefile            # Build automation
-├── manifest.yaml       # StartOS service manifest
-├── instructions.md     # User documentation
-├── icon.png            # Service icon
-├── LICENSE             # License file
+├── startos/                    # StartOS SDK TypeScript files
+│   ├── actions/                # User actions (Configuration)
+│   │   ├── index.ts
+│   │   └── config.ts
+│   ├── fileModels/             # Persistent data schemas
+│   │   └── store.json.ts
+│   ├── init/                   # Initialization orchestration
+│   │   └── index.ts
+│   ├── install/                # Version management
+│   │   ├── versions/
+│   │   │   ├── index.ts
+│   │   │   └── v0.1.0.0.ts
+│   │   └── versionGraph.ts
+│   ├── backups.ts              # Backup configuration
+│   ├── dependencies.ts         # Service dependencies
+│   ├── index.ts                # Main exports
+│   ├── interfaces.ts           # Network interfaces
+│   ├── main.ts                 # Daemon and health checks
+│   ├── manifest.ts             # Service manifest
+│   ├── sdk.ts                  # SDK initialization
+│   └── utils.ts                # Shared constants
 ├── scripts/
-│   ├── deps.ts         # Deno dependencies
-│   ├── embassy.ts      # Embassy script exports
-│   ├── bundle.ts       # Deno bundler script
-│   ├── docker_entrypoint.sh  # Container startup
-│   ├── check-api.sh    # Backend health check
-│   ├── check-web.sh    # Frontend health check
-│   └── services/
-│       ├── getConfig.ts    # Config UI definition
-│       ├── setConfig.ts    # Config setter
-│       ├── properties.ts   # Service properties
-│       └── migrations.ts   # Version migrations
-└── README.md           # This file
+│   ├── docker_entrypoint.sh    # Container startup
+│   ├── check-api.sh            # Backend health check
+│   └── check-web.sh            # Frontend health check
+├── Dockerfile                  # Multi-stage build
+├── Makefile                    # Build automation
+├── package.json                # Node.js dependencies
+├── tsconfig.json               # TypeScript configuration
+├── instructions.md             # User documentation
+├── icon.png                    # Service icon
+├── LICENSE                     # License file
+└── README.md                   # This file
 ```
 
 ## Configuration Options
 
-The service exposes these configuration options in the StartOS UI:
+The service exposes these configuration options via the Configuration action in the StartOS UI:
 
 - **Bitcoin Network**: mainnet, testnet, or regtest
 - **Electrum Server**: Local Electrs (recommended) or external server
-- **External Electrum URL**: Custom Electrum server URL
+- **External Electrum URL**: Custom Electrum server URL (when using external)
 - **Admin Notification Topic**: ntfy.sh topic for admin alerts
 
 ## Dependencies
 
-Canary has an optional dependency on **Electrs** for local blockchain data access. When configured to use the local Electrs server, StartOS will ensure Electrs is installed and running.
+Canary works best with **Electrs** for local blockchain data access. When configured to use the local Electrs server, it provides maximum privacy by keeping your wallet addresses on your own server.
 
 ## Testing
 
 After installation, verify:
 
 1. The service starts without errors (check logs)
-2. Both health checks pass (API and Web Interface)
+2. Both health checks pass (Backend API and Web Interface)
 3. The web UI is accessible via Tor or LAN
 4. Wallet syncing works with your Electrum server
 
 ## Releasing a New Version
 
-1. Update `version` in `manifest.yaml`
-2. Update `release-notes` in `manifest.yaml`
-3. Tag the upstream Canary repo with the same version
-4. Build and test: `make clean && make`
-5. Submit to Start9 registry
-
-## Submission to Start9 Registry
-
-To submit this package to the Start9 Community Registry:
-
-1. Ensure the package builds successfully on both architectures
-2. Test thoroughly on a StartOS device
-3. Follow the submission process at https://docs.start9.com/developer-docs/submission
+1. Update version in `startos/install/versions/`
+2. Create a new version file (e.g., `v0.2.0.0.ts`)
+3. Update `versions/index.ts` to point to the new version
+4. Tag the upstream Canary repo with the same version
+5. Build and test: `make clean && make`
+6. Submit to Start9 registry
 
 ## Links
 

@@ -1,13 +1,12 @@
 # Start9 combined Dockerfile for Canary
 # Builds both Rust backend and Next.js frontend in a single image
 
-ARG PLATFORM
 ARG CANARY_VERSION=main
 
 # =============================================================================
 # Stage 1: Clone Canary source
 # =============================================================================
-FROM --platform=${PLATFORM} alpine:3.20 AS source
+FROM alpine:3.20 AS source
 
 ARG CANARY_VERSION
 
@@ -19,7 +18,7 @@ RUN git clone --depth 1 --branch ${CANARY_VERSION} https://github.com/schjonhaug
 # =============================================================================
 # Stage 2: Build Rust backend
 # =============================================================================
-FROM --platform=${PLATFORM} rust:1.85-slim AS rust-builder
+FROM rust:1.85-slim AS rust-builder
 
 WORKDIR /app
 
@@ -41,7 +40,7 @@ RUN cargo build --release
 # =============================================================================
 # Stage 3: Build Node.js xpub-tools dependencies
 # =============================================================================
-FROM --platform=${PLATFORM} node:20-slim AS node-tools-builder
+FROM node:20-slim AS node-tools-builder
 
 WORKDIR /app/xpub-tools
 
@@ -55,7 +54,7 @@ RUN npm ci --only=production
 # =============================================================================
 # Stage 4: Build Next.js frontend
 # =============================================================================
-FROM --platform=${PLATFORM} node:22-alpine AS frontend-builder
+FROM node:22-alpine AS frontend-builder
 
 WORKDIR /app
 
@@ -82,7 +81,7 @@ RUN npx next build --webpack
 # =============================================================================
 # Stage 5: Runtime image
 # =============================================================================
-FROM --platform=${PLATFORM} debian:bookworm-slim
+FROM debian:bookworm-slim
 
 WORKDIR /app
 

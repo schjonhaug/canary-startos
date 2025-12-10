@@ -5,20 +5,38 @@ echo "Starting Canary Bitcoin Wallet Manager for StartOS..."
 
 # Configuration from environment (set by Start9)
 CANARY_DATA_DIR="${CANARY_DATA_DIR:-/app/data}"
-CANARY_NETWORK="${CANARY_NETWORK:-mainnet}"
 CANARY_BIND_ADDRESS="${CANARY_BIND_ADDRESS:-0.0.0.0:3000}"
 
-# Determine Electrum URL
-# Check if we should use local Electrs (Start9 dependency)
-if [ -f /mnt/electrs/start9/stats.yaml ]; then
-    # Get Electrs connection info from Start9
+# Read configuration from store.json if it exists
+STORE_FILE="${CANARY_DATA_DIR}/store.json"
+if [ -f "$STORE_FILE" ]; then
+    echo "Reading configuration from store.json..."
+    CANARY_NETWORK=$(node -e "console.log(require('$STORE_FILE').network || 'mainnet')" 2>/dev/null || echo "mainnet")
+    ELECTRUM_SOURCE=$(node -e "console.log(require('$STORE_FILE').electrumSource || 'local')" 2>/dev/null || echo "local")
+    EXTERNAL_ELECTRUM_URL=$(node -e "console.log(require('$STORE_FILE').externalElectrumUrl || '')" 2>/dev/null || echo "")
+    ADMIN_NOTIFICATION_TOPIC=$(node -e "console.log(require('$STORE_FILE').adminNotificationTopic || '')" 2>/dev/null || echo "")
+else
+    echo "No store.json found, using defaults..."
+    CANARY_NETWORK="mainnet"
+    ELECTRUM_SOURCE="local"
+    EXTERNAL_ELECTRUM_URL=""
+    ADMIN_NOTIFICATION_TOPIC=""
+fi
+
+# Determine Electrum URL based on configuration
+if [ "$ELECTRUM_SOURCE" = "local" ]; then
+    # Use local Electrs (Start9 dependency)
     ELECTRS_HOST="electrs.embassy"
     ELECTRS_PORT="50001"
-    CANARY_ELECTRUM_URL="${CANARY_ELECTRUM_URL:-tcp://${ELECTRS_HOST}:${ELECTRS_PORT}}"
+    CANARY_ELECTRUM_URL="tcp://${ELECTRS_HOST}:${ELECTRS_PORT}"
     echo "Using local Electrs server"
 else
-    # Fall back to external Electrum server
-    CANARY_ELECTRUM_URL="${CANARY_ELECTRUM_URL:-ssl://electrum.blockstream.info:50002}"
+    # Use external Electrum server
+    if [ -n "$EXTERNAL_ELECTRUM_URL" ]; then
+        CANARY_ELECTRUM_URL="$EXTERNAL_ELECTRUM_URL"
+    else
+        CANARY_ELECTRUM_URL="ssl://electrum.blockstream.info:50002"
+    fi
     echo "Using external Electrum server"
 fi
 
@@ -34,6 +52,11 @@ export CANARY_NETWORK
 export CANARY_ELECTRUM_URL
 export CANARY_BIND_ADDRESS
 
+# Export admin notification topic if set
+if [ -n "$ADMIN_NOTIFICATION_TOPIC" ]; then
+    export CANARY_ADMIN_NOTIFICATION_TOPIC="$ADMIN_NOTIFICATION_TOPIC"
+fi
+
 # Export environment for frontend
 export NEXT_PUBLIC_CANARY_MODE=self-hosted
 export NEXT_PUBLIC_API_URL="http://localhost:3000"
@@ -45,9 +68,13 @@ echo "========================================"
 echo "Canary Configuration:"
 echo "  Mode: self-hosted (StartOS)"
 echo "  Network: ${CANARY_NETWORK}"
-echo "  Electrum: ${CANARY_ELECTRUM_URL}"
+echo "  Electrum Source: ${ELECTRUM_SOURCE}"
+echo "  Electrum URL: ${CANARY_ELECTRUM_URL}"
 echo "  Backend: ${CANARY_BIND_ADDRESS}"
 echo "  Data directory: ${CANARY_DATA_DIR}"
+if [ -n "$ADMIN_NOTIFICATION_TOPIC" ]; then
+    echo "  Admin Notifications: ${ADMIN_NOTIFICATION_TOPIC}"
+fi
 echo "========================================"
 
 # Start backend in background
