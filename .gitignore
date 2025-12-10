@@ -1,0 +1,9 @@
+# Build artifacts
+docker-images/
+*.s9pk
+
+# Bundled scripts
+scripts/embassy.js
+
+# macOS
+.DS_Store
