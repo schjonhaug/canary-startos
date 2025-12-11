@@ -75,8 +75,8 @@ RUN npm ci
 # Copy frontend source code
 COPY --from=source /src/frontend/ .
 
-# Build Next.js with webpack (standalone output)
-RUN npx next build --webpack
+# Build Next.js (standalone output)
+RUN npx next build
 
 # =============================================================================
 # Stage 5: Runtime image

@@ -30,6 +30,9 @@ Perfect for monitoring your cold storage wallets or watching family members' wal
       source: {
         dockerBuild: {
           dockerfile: './Dockerfile',
+          buildArgs: {
+            CANARY_VERSION: { env: 'CANARY_VERSION' },
+          },
         },
       },
     },
