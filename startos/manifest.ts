@@ -51,5 +51,11 @@ Wallet data will re-sync from the Electrum server.`,
     start: null,
     stop: null,
   },
-  dependencies: {},
+  dependencies: {
+    electrs: {
+      description: 'Required for syncing wallet data from the Bitcoin blockchain',
+      optional: false,
+      s9pk: null,
+    },
+  },
 })
