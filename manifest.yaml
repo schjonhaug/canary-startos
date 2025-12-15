@@ -1,0 +1,128 @@
+id: canary
+title: Canary
+version: 1.0.1
+release-notes: |
+  Initial release for StartOS 0.3.5
+  * Bitcoin wallet monitoring with transaction notifications
+  * Support for multipath descriptors (P2WPKH, P2SH, P2TR, P2PKH)
+  * Real-time notifications via ntfy.sh
+  * Multi-language support (English and Norwegian)
+license: Elastic-2.0
+wrapper-repo: "https://github.com/schjonhaug/canary-startos"
+upstream-repo: "https://github.com/schjonhaug/canary"
+support-site: "https://github.com/schjonhaug/canary/issues"
+marketing-site: "https://github.com/schjonhaug/canary"
+build: ["make"]
+description:
+  short: Bitcoin wallet monitoring service with transaction notifications
+  long: |
+    Canary is a self-hosted Bitcoin wallet monitoring service that provides:
+    - Watch-only wallet management using BDK (Bitcoin Development Kit)
+    - Real-time transaction notifications via ntfy.sh push notifications
+    - Support for multipath descriptors (P2WPKH, P2SH, P2TR, P2PKH)
+    - Deep scanning to detect funds at high address indexes
+    - Transaction analysis including RBF/CPFP detection
+    - Multi-language support (English and Norwegian)
+    - Balance alerts with configurable thresholds
+
+    Perfect for monitoring your cold storage wallets or watching family members' wallets.
+assets:
+  license: LICENSE
+  icon: icon.png
+  instructions: instructions.md
+main:
+  type: docker
+  image: main
+  entrypoint: "docker_entrypoint.sh"
+  args: []
+  mounts:
+    main: /app/data
+health-checks:
+  api:
+    name: Backend API
+    success-message: The Canary API is responding
+    type: docker
+    image: main
+    entrypoint: "check-api.sh"
+    args: []
+    io-format: json
+    inject: true
+  web:
+    name: Web Interface
+    success-message: The Canary web interface is ready
+    type: docker
+    image: main
+    entrypoint: "check-web.sh"
+    args: []
+    io-format: json
+    inject: true
+config: ~
+properties:
+  type: script
+volumes:
+  main:
+    type: data
+interfaces:
+  web-ui:
+    name: Web Interface
+    description: The main web interface for managing your Bitcoin wallets
+    tor-config:
+      port-mapping:
+        3001: "3001"
+    lan-config:
+      443:
+        ssl: true
+        internal: 3001
+    ui: true
+    protocols:
+      - tcp
+      - http
+dependencies:
+  electrs:
+    version: ">=0.9.0 <1.0.0"
+    requirement:
+      type: required
+    description: Required for syncing wallet data from the Bitcoin blockchain
+    config: ~
+alerts:
+  install: |
+    Canary requires an Electrum server connection to sync wallet data.
+    Make sure you have electrs installed and running on your StartOS.
+  uninstall: |
+    Your wallet data and notification history will be preserved in backups.
+    No Bitcoin funds are stored - this is a watch-only monitoring service.
+  restore: |
+    Your wallet configurations and notification settings have been restored.
+    Wallet data will re-sync from the Electrum server.
+backup:
+  create:
+    type: docker
+    image: main
+    system: false
+    entrypoint: /bin/bash
+    args:
+      - -c
+      - "cp -r /app/data/* /mnt/backup/ 2>/dev/null || true"
+    mounts:
+      BACKUP: /mnt/backup
+      main: /app/data
+  restore:
+    type: docker
+    image: main
+    system: false
+    entrypoint: /bin/bash
+    args:
+      - -c
+      - "cp -r /mnt/backup/* /app/data/ 2>/dev/null || true"
+    mounts:
+      BACKUP: /mnt/backup
+      main: /app/data
+migrations:
+  from:
+    "*":
+      type: script
+      args: ["from"]
+  to:
+    "*":
+      type: script
+      args: ["to"]
