@@ -1,11 +1,13 @@
 id: canary
 title: Canary
-version: 1.0.1
+version: 1.1.0
 release-notes: |
   Initial release for StartOS 0.3.5
   * Bitcoin wallet monitoring with transaction notifications
   * Support for multipath descriptors (P2WPKH, P2SH, P2TR, P2PKH)
   * Real-time notifications via ntfy.sh
+  * Custom ntfy server URL configuration for self-hosted deployments
+  * ntfy authentication support (Bearer token or Basic auth)
   * Multi-language support (English and Norwegian)
 license: Elastic-2.0
 wrapper-repo: "https://github.com/schjonhaug/canary-startos"

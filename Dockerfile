@@ -1,7 +1,7 @@
 # Start9 combined Dockerfile for Canary
 # Builds both Rust backend and Next.js frontend in a single image
 
-ARG CANARY_VERSION=main
+ARG CANARY_VERSION=v1.1.0
 
 # =============================================================================
 # Stage 1: Clone Canary source

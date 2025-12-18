@@ -2,53 +2,52 @@
 
 This repository contains the StartOS wrapper for [Canary](https://github.com/schjonhaug/canary), a self-hosted Bitcoin wallet monitoring service.
 
-## Prerequisites
+## Development
 
-To build the package, you need:
+### Prerequisites
 
-- Node.js v22 LTS
-- Docker with buildx support
-- [start-cli](https://start9labs.github.io/start-cli) - StartOS CLI
-
-### Installing Dependencies
+- [Deno](https://deno.land/) - for bundling TypeScript scripts
+- [start-sdk](https://github.com/Start9Labs/start-os/tree/master/core) - StartOS SDK
+- [Docker](https://www.docker.com/) with buildx support
+- [yq](https://github.com/mikefarah/yq) - YAML processor
 
 ```bash
-# Install Node.js (macOS)
-brew install node@22
+# macOS
+brew install deno yq
+brew install --cask docker
 
-# Install start-cli
-curl -fsSL https://start9labs.github.io/start-cli | sh
+# Install start-sdk (see Start9 docs)
 ```
 
-## Building
+### Building
 
 ```bash
-# Build for all architectures (x86_64 and aarch64)
-make
+# Clean previous build and rebuild for all architectures
+make clean && make
 
-# Build for specific architecture only
-make x86_64   # x86_64 only
-make aarch64  # aarch64 only
-
-# Legacy aliases also work
-make x86   # x86_64 only
-make arm   # aarch64 only
+# Build for specific architecture only (faster)
+make arm   # aarch64 - Server Pure/Lite
+make x86   # x86_64 - Server Pro
 ```
 
-The resulting `canary.s9pk` file can be sideloaded into StartOS.
+The build process:
+1. Bundles Deno scripts into `scripts/embassy.js`
+2. Builds Docker images for target architecture(s)
+3. Packs everything into `canary.s9pk`
+4. Verifies the package
 
-## Installing on StartOS
+### Sideloading
 
-### Option 1: Via CLI
+#### Option 1: Via CLI
 
 ```bash
-# Configure your StartOS server in ~/.startos/config.yaml
+# Configure your StartOS server in ~/.embassy/config.yaml
 # host: http://your-server.local
 
 make install
 ```
 
-### Option 2: Sideload via UI
+#### Option 2: Via Web UI
 
 1. Open StartOS web interface
 2. Go to System > Sideload Service
