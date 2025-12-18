@@ -6,17 +6,13 @@ This repository contains the StartOS wrapper for [Canary](https://github.com/sch
 
 ### Prerequisites
 
-- [Deno](https://deno.land/) - for bundling TypeScript scripts
-- [start-sdk](https://github.com/Start9Labs/start-os/tree/master/core) - StartOS SDK
 - [Docker](https://www.docker.com/) with buildx support
 - [yq](https://github.com/mikefarah/yq) - YAML processor
 
 ```bash
 # macOS
-brew install deno yq
+brew install yq
 brew install --cask docker
-
-# Install start-sdk (see Start9 docs)
 ```
 
 ### Building
@@ -31,10 +27,11 @@ make x86   # x86_64 - Server Pro
 ```
 
 The build process:
-1. Bundles Deno scripts into `scripts/embassy.js`
+1. Builds start-sdk Docker image (first time only, ~2 min)
 2. Builds Docker images for target architecture(s)
 3. Packs everything into `canary.s9pk`
-4. Verifies the package
+
+**Note:** The start-sdk runs inside Docker because it has Linux-specific dependencies that don't compile on macOS.
 
 ### Sideloading
 

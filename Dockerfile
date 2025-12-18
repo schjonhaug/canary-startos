@@ -56,6 +56,9 @@ RUN npm ci --only=production
 # =============================================================================
 FROM node:22-alpine AS frontend-builder
 
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 WORKDIR /app
 
 # Build args for Next.js
@@ -67,16 +70,16 @@ ENV NEXT_PUBLIC_CANARY_MODE=$NEXT_PUBLIC_CANARY_MODE
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 # Copy frontend package files
-COPY --from=source /src/frontend/package*.json ./
+COPY --from=source /src/frontend/package.json /src/frontend/pnpm-lock.yaml ./
 
 # Install dependencies
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # Copy frontend source code
 COPY --from=source /src/frontend/ .
 
 # Build Next.js (standalone output)
-RUN npx next build
+RUN pnpm next build
 
 # =============================================================================
 # Stage 5: Runtime image

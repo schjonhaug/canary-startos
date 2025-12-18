@@ -59,8 +59,7 @@ health-checks:
     io-format: json
     inject: true
 config: ~
-properties:
-  type: script
+properties: ~
 volumes:
   main:
     type: data
@@ -122,9 +121,17 @@ backup:
 migrations:
   from:
     "*":
-      type: script
-      args: ["from"]
+      type: docker
+      image: main
+      entrypoint: /bin/bash
+      args: ["-c", "exit 0"]
+      mounts:
+        main: /app/data
   to:
     "*":
-      type: script
-      args: ["to"]
+      type: docker
+      image: main
+      entrypoint: /bin/bash
+      args: ["-c", "exit 0"]
+      mounts:
+        main: /app/data
