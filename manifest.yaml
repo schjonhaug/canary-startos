@@ -125,6 +125,7 @@ migrations:
       image: main
       entrypoint: /bin/bash
       args: ["-c", "exit 0"]
+      io-format: json
       mounts:
         main: /app/data
   to:
@@ -133,5 +134,6 @@ migrations:
       image: main
       entrypoint: /bin/bash
       args: ["-c", "exit 0"]
+      io-format: json
       mounts:
         main: /app/data
