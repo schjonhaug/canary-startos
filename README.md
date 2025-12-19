@@ -6,13 +6,15 @@ This repository contains the StartOS wrapper for [Canary](https://github.com/sch
 
 ### Prerequisites
 
-- [Docker](https://www.docker.com/) with buildx support
-- [yq](https://github.com/mikefarah/yq) - YAML processor
-
+**macOS:**
 ```bash
-# macOS
 brew install yq
 brew install --cask docker
+```
+
+**Debian/Ubuntu (Start9 build environment):**
+```bash
+./prepare.sh
 ```
 
 ### Building
@@ -21,17 +23,22 @@ brew install --cask docker
 # Clean previous build and rebuild for all architectures
 make clean && make
 
-# Build for specific architecture only (faster)
+# Or explicitly build the s9pk file
+make canary.s9pk
+
+# Build for specific architecture only (faster for testing)
 make arm   # aarch64 - Server Pure/Lite
 make x86   # x86_64 - Server Pro
+
+# Verify the package
+make verify
 ```
 
 The build process:
-1. Builds start-sdk Docker image (first time only, ~2 min)
-2. Builds Docker images for target architecture(s)
-3. Packs everything into `canary.s9pk`
-
-**Note:** The start-sdk runs inside Docker because it has Linux-specific dependencies that don't compile on macOS.
+1. **Linux**: Uses native `start-sdk` (installed via prepare.sh)
+2. **macOS**: Builds start-sdk Docker image (first time only, ~2 min)
+3. Builds Docker images for target architecture(s)
+4. Packs everything into `canary.s9pk`
 
 ### Sideloading
 
@@ -54,74 +61,48 @@ make install
 
 ```
 canary-startos/
-├── startos/                    # StartOS SDK TypeScript files
-│   ├── actions/                # User actions (Configuration)
-│   │   ├── index.ts
-│   │   └── config.ts
-│   ├── fileModels/             # Persistent data schemas
-│   │   └── store.json.ts
-│   ├── init/                   # Initialization orchestration
-│   │   └── index.ts
-│   ├── install/                # Version management
-│   │   ├── versions/
-│   │   │   ├── index.ts
-│   │   │   └── v0.1.0.0.ts
-│   │   └── versionGraph.ts
-│   ├── backups.ts              # Backup configuration
-│   ├── dependencies.ts         # Service dependencies
-│   ├── index.ts                # Main exports
-│   ├── interfaces.ts           # Network interfaces
-│   ├── main.ts                 # Daemon and health checks
-│   ├── manifest.ts             # Service manifest
-│   ├── sdk.ts                  # SDK initialization
-│   └── utils.ts                # Shared constants
 ├── scripts/
 │   ├── docker_entrypoint.sh    # Container startup
 │   ├── check-api.sh            # Backend health check
 │   └── check-web.sh            # Frontend health check
 ├── Dockerfile                  # Multi-stage build
 ├── Makefile                    # Build automation
-├── package.json                # Node.js dependencies
-├── tsconfig.json               # TypeScript configuration
+├── prepare.sh                  # Debian build environment setup
+├── sdk.Dockerfile              # start-sdk Docker build (macOS)
+├── manifest.yaml               # StartOS service manifest
 ├── instructions.md             # User documentation
-├── icon.png                    # Service icon
-├── LICENSE                     # License file
-└── README.md                   # This file
+├── icon.png                    # Service icon (256x256)
+└── LICENSE                     # License file
 ```
-
-## Configuration Options
-
-The service exposes these configuration options via the Configuration action in the StartOS UI:
-
-- **Bitcoin Network**: mainnet, testnet, or regtest
-- **Electrum Server**: Local Electrs (recommended) or external server
-- **External Electrum URL**: Custom Electrum server URL (when using external)
-- **Admin Notification Topic**: ntfy.sh topic for admin alerts
 
 ## Dependencies
 
-Canary works best with **Electrs** for local blockchain data access. When configured to use the local Electrs server, it provides maximum privacy by keeping your wallet addresses on your own server.
+Canary requires **Electrs** for blockchain data access. When using the local Electrs server, it provides maximum privacy by keeping your wallet addresses on your own server.
 
-## Testing
+## Testing Checklist
 
-After installation, verify:
+After sideloading, verify:
 
-1. The service starts without errors (check logs)
-2. Both health checks pass (Backend API and Web Interface)
-3. The web UI is accessible via Tor or LAN
-4. Wallet syncing works with your Electrum server
+- [ ] Service starts without errors (check logs)
+- [ ] Both health checks pass (Backend API and Web Interface)
+- [ ] Web UI is accessible via Tor or LAN
+- [ ] Wallet syncing works with Electrs
+- [ ] Push notifications work via ntfy
+- [ ] Backup and restore work correctly
 
-## Releasing a New Version
+## Submitting to Start9 Registry
 
-1. Update version in `startos/install/versions/`
-2. Create a new version file (e.g., `v0.2.0.0.ts`)
-3. Update `versions/index.ts` to point to the new version
-4. Tag the upstream Canary repo with the same version
-5. Build and test: `make clean && make`
-6. Submit to Start9 registry
+1. Ensure all tests pass
+2. Push latest changes to GitHub
+3. Email submissions@start9.com with:
+   - Link to this repository
+   - Version number being submitted
+4. Wait for Start9 to build and test on their Debian system
+5. When approved, confirm to publish to production
 
 ## Links
 
 - **Upstream**: https://github.com/schjonhaug/canary
+- **Wrapper**: https://github.com/schjonhaug/canary-startos
 - **Issues**: https://github.com/schjonhaug/canary/issues
-- **Start9 Docs**: https://docs.start9.com/developer-docs/
+- **Start9 Docs**: https://docs.start9.com/0.3.5.x/developer-docs/
