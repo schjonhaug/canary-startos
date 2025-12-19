@@ -51,6 +51,7 @@ export CANARY_DATA_DIR
 export CANARY_NETWORK
 export CANARY_ELECTRUM_URL
 export CANARY_BIND_ADDRESS
+export CANARY_SYNC_INTERVAL=60  # Sync every 60 seconds (vs 300s default)
 
 # Export admin notification topic if set
 if [ -n "$ADMIN_NOTIFICATION_TOPIC" ]; then
@@ -72,6 +73,7 @@ echo "  Electrum Source: ${ELECTRUM_SOURCE}"
 echo "  Electrum URL: ${CANARY_ELECTRUM_URL}"
 echo "  Backend: ${CANARY_BIND_ADDRESS}"
 echo "  Data directory: ${CANARY_DATA_DIR}"
+echo "  Sync interval: ${CANARY_SYNC_INTERVAL}s"
 if [ -n "$ADMIN_NOTIFICATION_TOPIC" ]; then
     echo "  Admin Notifications: ${ADMIN_NOTIFICATION_TOPIC}"
 fi
