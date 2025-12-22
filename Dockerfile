@@ -1,7 +1,7 @@
 # Start9 combined Dockerfile for Canary
 # Builds both Rust backend and Next.js frontend in a single image
 
-ARG CANARY_VERSION=v1.1.0
+ARG CANARY_VERSION=v1.2.0
 
 # =============================================================================
 # Stage 1: Clone Canary source
@@ -38,21 +38,7 @@ COPY --from=source /src/backend/migrations ./migrations
 RUN cargo build --release
 
 # =============================================================================
-# Stage 3: Build Node.js xpub-tools dependencies
-# =============================================================================
-FROM node:20-slim AS node-tools-builder
-
-WORKDIR /app/xpub-tools
-
-# Copy xpub-tools project files
-COPY --from=source /src/backend/xpub-tools/package.json /src/backend/xpub-tools/package-lock.json* ./
-COPY --from=source /src/backend/xpub-tools/scripts ./scripts
-
-# Install dependencies
-RUN npm ci --only=production
-
-# =============================================================================
-# Stage 4: Build Next.js frontend
+# Stage 3: Build Next.js frontend
 # =============================================================================
 FROM node:22-alpine AS frontend-builder
 
@@ -82,7 +68,7 @@ COPY --from=source /src/frontend/ .
 RUN pnpm next build
 
 # =============================================================================
-# Stage 5: Runtime image
+# Stage 4: Runtime image
 # =============================================================================
 FROM debian:bookworm-slim
 
@@ -107,9 +93,6 @@ COPY --from=rust-builder /app/target/release/canary /app/backend/canary
 
 # Copy backend migrations
 COPY --from=rust-builder /app/migrations /app/backend/migrations
-
-# Copy Node.js xpub-tools
-COPY --from=node-tools-builder /app/xpub-tools /app/backend/xpub-tools
 
 # Copy Next.js standalone build
 COPY --from=frontend-builder /app/public /app/frontend/public
