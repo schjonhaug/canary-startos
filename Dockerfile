@@ -65,7 +65,8 @@ RUN pnpm install --frozen-lockfile
 COPY --from=source /src/frontend/ .
 
 # Build Next.js (standalone output)
-RUN pnpm next build
+# Clear NODE_OPTIONS to avoid conflicts with Next.js 16 Turbopack workers
+RUN NODE_OPTIONS="" pnpm next build
 
 # =============================================================================
 # Stage 4: Runtime image
