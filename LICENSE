@@ -49,5 +49,6 @@ For commercial licensing inquiries (if you want to offer Canary as a managed ser
 ## Third-Party Dependencies
 
 This project includes dependencies licensed under various open-source licenses. See individual dependency licenses in:
+
 - `backend/Cargo.toml` (Rust dependencies)
 - `frontend/package.json` (JavaScript dependencies)

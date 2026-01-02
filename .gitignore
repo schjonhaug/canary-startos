@@ -1,9 +1,8 @@
-# Build artifacts
-docker-images/
 *.s9pk
-
-# Bundled scripts
-scripts/embassy.js
-
-# macOS
+startos/*.js
+node_modules/
 .DS_Store
+.vscode/
+docker-images
+javascript
+ncc-cache
