@@ -17,10 +17,12 @@ Alternatively, you can configure an external Electrum server in Settings, but th
 
 ### 2. Access the Web Interface
 
-1. Click on **Interfaces** in the service details
-2. Choose either:
+1. Run the **Show Login Credentials** action and copy the generated password
+2. Click on **Interfaces** in the service details
+3. Choose either:
    - **Tor Address** - Access via Tor Browser (more private, but slower)
    - **LAN Address** - Access from your local network (faster, requires HTTPS certificate acceptance)
+4. Sign in with username `admin@local` and the generated password
 
 ### 3. Add Your First Wallet
 

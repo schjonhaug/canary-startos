@@ -1,3 +1,4 @@
+import { ensureCredentials } from './credentials'
 import { storeJson } from './fileModels/store.json'
 import { sdk } from './sdk'
 import { serverPort, uiPort } from './utils'
@@ -11,6 +12,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
   console.info('Starting Canary!')
 
   const electrum = await storeJson.read((s) => s.electrum).const(effects)
+  const credentials = await ensureCredentials(effects)
   const mountpoint = '/app/data'
 
   /**
@@ -41,7 +43,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
           CANARY_BIND_ADDRESS: `0.0.0.0:${serverPort}`,
           CANARY_DATA_DIR: mountpoint,
           CANARY_MODE: 'self-hosted',
+          CANARY_SELF_HOSTED_ADMIN_PASSWORD: credentials.adminPassword,
           CANARY_SYNC_INTERVAL: '60',
+          JWT_SECRET: credentials.jwtSecret,
         },
       },
       ready: {

@@ -28,12 +28,12 @@ Perfect for monitoring your cold storage wallets or watching family members' wal
   images: {
     frontend: {
       source: {
-        dockerTag: 'schjonhaug/canary-frontend:v1.4.0',
+        dockerTag: 'schjonhaug/canary-frontend:v1.5.0-test-db42e33',
       },
     },
     backend: {
       source: {
-        dockerTag: 'schjonhaug/canary-backend:v1.4.0',
+        dockerTag: 'schjonhaug/canary-backend:v1.5.0-test-db42e33',
       },
     },
   },
@@ -50,7 +50,7 @@ Perfect for monitoring your cold storage wallets or watching family members' wal
       optional: true,
       description: 'Used for syncing wallet data from the Bitcoin blockchain',
       metadata: {
-        icon: 'https://raw.githubusercontent.com/Start9Labs/electrs-startos/refs/heads/master/icon.png',
+        icon: 'https://raw.githubusercontent.com/Start9-Community/electrs-startos/refs/heads/master/icon.svg',
         title: 'Electrs',
       },
     },
