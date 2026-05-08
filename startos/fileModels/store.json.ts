@@ -1,16 +1,15 @@
-import { matches, FileHelper } from '@start9labs/start-sdk'
+import { FileHelper, z } from '@start9labs/start-sdk'
+import { sdk } from '../sdk'
 
-const { object, literals, string } = matches
-
-const shape = object({
-  electrum: literals('fulcrum', 'electrs').nullable().onMismatch(null),
-  adminPassword: string.optional().onMismatch(undefined),
-  jwtSecret: string.optional().onMismatch(undefined),
+const shape = z.object({
+  electrum: z.enum(['fulcrum', 'electrs']).nullable().catch(null),
+  adminPassword: z.string().optional().catch(undefined),
+  jwtSecret: z.string().optional().catch(undefined),
 })
 
 export const storeJson = FileHelper.json(
   {
-    volumeId: 'main',
+    base: sdk.volumes.main,
     subpath: '/store.json',
   },
   shape,
