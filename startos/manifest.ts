@@ -28,12 +28,12 @@ Perfect for monitoring your cold storage wallets or watching family members' wal
   images: {
     frontend: {
       source: {
-        dockerTag: 'schjonhaug/canary-frontend:v1.5.0-test-db42e33',
+        dockerTag: 'schjonhaug/canary-frontend:v1.5.0',
       },
     },
     backend: {
       source: {
-        dockerTag: 'schjonhaug/canary-backend:v1.5.0-test-db42e33',
+        dockerTag: 'schjonhaug/canary-backend:v1.5.0',
       },
     },
   },
