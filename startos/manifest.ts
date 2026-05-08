@@ -4,13 +4,13 @@ export const manifest = setupManifest({
   id: 'canary',
   title: 'Canary',
   license: 'Elastic-2.0',
-  wrapperRepo: 'https://github.com/schjonhaug/canary-startos/',
+  packageRepo: 'https://github.com/schjonhaug/canary-startos/',
   upstreamRepo: 'https://github.com/schjonhaug/canary/',
-  supportSite: 'https://github.com/schjonhaug/canary/issues/',
-  marketingSite: 'https://canarybitcoin.com',
+  marketingUrl: 'https://canarybitcoin.com',
   donationUrl: 'https://canarybitcoin.com/donations',
-  docsUrl:
+  docsUrls: [
     'https://github.com/schjonhaug/canary-startos/blob/master/instructions.md',
+  ],
   description: {
     short: 'Bitcoin wallet monitoring service with transaction notifications',
     long: `Canary is a self-hosted Bitcoin wallet monitoring service that provides:
@@ -28,13 +28,15 @@ Perfect for monitoring your cold storage wallets or watching family members' wal
   images: {
     frontend: {
       source: {
-        dockerTag: 'schjonhaug/canary-frontend:v1.4.0',
+        dockerTag: 'schjonhaug/canary-frontend:v1.5.0',
       },
+      arch: ['x86_64', 'aarch64'],
     },
     backend: {
       source: {
-        dockerTag: 'schjonhaug/canary-backend:v1.4.0',
+        dockerTag: 'schjonhaug/canary-backend:v1.5.0',
       },
+      arch: ['x86_64', 'aarch64'],
     },
   },
   dependencies: {
@@ -50,7 +52,7 @@ Perfect for monitoring your cold storage wallets or watching family members' wal
       optional: true,
       description: 'Used for syncing wallet data from the Bitcoin blockchain',
       metadata: {
-        icon: 'https://raw.githubusercontent.com/Start9Labs/electrs-startos/refs/heads/master/icon.png',
+        icon: 'https://raw.githubusercontent.com/Start9-Community/electrs-startos/refs/heads/master/icon.svg',
         title: 'Electrs',
       },
     },
