@@ -36,12 +36,12 @@ x86 x86_64: arch/x86_64
 arm arm64 aarch64: arch/aarch64
 riscv riscv64: arch/riscv64
 
-$(PACKAGE_ID).s9pk: $(INGREDIENTS) .git/HEAD .git/index
+$(PACKAGE_ID).s9pk: javascript/index.js $(INGREDIENTS) .git/HEAD .git/index
 	@$(MAKE) --no-print-directory ingredients
 	@echo "   Packing '$@'..."
 	start-cli s9pk pack -o $@
 
-$(PACKAGE_ID)_%.s9pk: $(INGREDIENTS) .git/HEAD .git/index
+$(PACKAGE_ID)_%.s9pk: javascript/index.js $(INGREDIENTS) .git/HEAD .git/index
 	@$(MAKE) --no-print-directory ingredients
 	@echo "   Packing '$@'..."
 	start-cli s9pk pack --arch=$* -o $@
