@@ -9,7 +9,7 @@
     "@start9labs/start-sdk": "^1.4.1"
   },
   "devDependencies": {
-    "@types/node": "^22.19.0",
+    "@types/node": "^26.2.0",
     "@vercel/ncc": "^0.38.4",
     "prettier": "^3.9.6",
     "typescript": "^5.9.3"
