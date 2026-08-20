@@ -7,10 +7,10 @@ on:
 
 jobs:
   release:
-    uses: start9labs/shared-workflows/.github/workflows/releaseService.yml@master
+    uses: Start9Labs/shared-workflows/.github/workflows/release.yml@6f3216afb2818e350e7ce21d27101427cbbf34db
     with:
       # FREE_DISK_SPACE: true
-      REGISTRY: ${{ vars.REGISTRY }} # Optional. Defaults to https://alpha-registry-x.start9.com
+      RELEASE_REGISTRY: ${{ vars.REGISTRY }} # Optional registry publishing target
     secrets:
       DEV_KEY: ${{ secrets.DEV_KEY }} # Required
     permissions:
