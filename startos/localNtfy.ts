@@ -169,12 +169,12 @@ export async function getLocalNtfyEnv(
   }
 
   const env: Record<string, string> = {
-    CANARY_NTFY_SERVER_URL: publishUrl,
+    CANARY_WALLET_NTFY_SERVER_URL: publishUrl,
   }
 
   if (storedNtfy) {
-    env.CANARY_NTFY_TOKEN = storedNtfy.token
-    env.CANARY_NTFY_TOPIC = storedNtfy.topic
+    env.CANARY_WALLET_NTFY_TOKEN = storedNtfy.token
+    env.CANARY_WALLET_NTFY_TOPIC = storedNtfy.topic
   }
 
   return env

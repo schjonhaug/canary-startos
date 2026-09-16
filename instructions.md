@@ -2,8 +2,8 @@
 
 ## Documentation
 
-- [Canary Wallet upstream README](https://github.com/schjonhaug/canary#readme) — features, supported wallet types, and notification options.
-- [Canary Wallet issue tracker](https://github.com/schjonhaug/canary/issues) — bugs and feature requests.
+- [Canary Wallet upstream README](https://github.com/schjonhaug/canary-wallet#readme) — features, supported wallet types, and notification options.
+- [Canary Wallet issue tracker](https://github.com/schjonhaug/canary-wallet/issues) — bugs and feature requests.
 
 ## What you get on StartOS
 

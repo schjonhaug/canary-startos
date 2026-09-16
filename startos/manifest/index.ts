@@ -14,7 +14,7 @@ export const manifest = setupManifest({
   title: 'Canary Wallet',
   license: 'Elastic-2.0',
   packageRepo: 'https://github.com/Start9-Community/canary-startos',
-  upstreamRepo: 'https://github.com/schjonhaug/canary/',
+  upstreamRepo: 'https://github.com/schjonhaug/canary-wallet/',
   marketingUrl: 'https://canarybitcoin.com',
   donationUrl: 'https://canarybitcoin.com/donations',
   description: { short, long },
@@ -22,12 +22,12 @@ export const manifest = setupManifest({
   images: {
     frontend: {
       source: {
-        dockerTag: 'schjonhaug/canary-frontend:v1.6.4',
+        dockerTag: 'schjonhaug/canary-wallet-frontend:v1.6.4',
       },
     },
     backend: {
       source: {
-        dockerTag: 'schjonhaug/canary-backend:v1.6.4',
+        dockerTag: 'schjonhaug/canary-wallet-backend:v1.6.4',
       },
     },
   },

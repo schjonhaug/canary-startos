@@ -9,7 +9,7 @@ type ExplorerInterface = {
   // Host id (the sdk.MultiHost.of group) and the interface id exported on it.
   hostId: string
   interfaceId: string
-  envVar: 'CANARY_MEMPOOL_URLS' | 'CANARY_BTC_RPC_EXPLORER_URLS'
+  envVar: 'CANARY_WALLET_MEMPOOL_URLS' | 'CANARY_WALLET_BTC_RPC_EXPLORER_URLS'
 }
 
 // Adding an explorer is an entry here and nothing else: package id, host id,
@@ -20,13 +20,13 @@ const explorerInterfaces: ExplorerInterface[] = [
     packageId: 'mempool',
     hostId: mempoolHostId,
     interfaceId: 'webui',
-    envVar: 'CANARY_MEMPOOL_URLS',
+    envVar: 'CANARY_WALLET_MEMPOOL_URLS',
   },
   {
     packageId: 'bitcoin-explorer',
     hostId: btcExplorerHostId,
     interfaceId: 'ui',
-    envVar: 'CANARY_BTC_RPC_EXPLORER_URLS',
+    envVar: 'CANARY_WALLET_BTC_RPC_EXPLORER_URLS',
   },
 ]
 
@@ -55,7 +55,7 @@ export async function getLocalExplorerEnv(
   }
 
   if (Object.keys(env).length > 0) {
-    env.CANARY_TX_EXPLORER_PLATFORM = 'startos'
+    env.CANARY_WALLET_TX_EXPLORER_PLATFORM = 'startos'
   }
 
   return env

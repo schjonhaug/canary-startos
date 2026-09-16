@@ -22,7 +22,7 @@ const electrumBinding = {
 
 /**
  * The selected Electrum server's `tcp://<bridge ip>:<port>` for
- * `CANARY_ELECTRUM_URL` (replaces `${electrum}.startos:50001`). A reactive
+ * `CANARY_WALLET_ELECTRUM_URL` (replaces `${electrum}.startos:50001`). A reactive
  * `.const()` on just the bridge address (doctrine v3): a server update is 0
  * restarts, install/uninstall/port-change is one healing restart. Resolves
  * null until the selected server's binding exists — main.ts throws until then

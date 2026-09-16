@@ -9,9 +9,9 @@
 > upstream documentation is accurate and fully applicable — see the
 > Documentation section of `instructions.md` for links.
 
-[Canary Wallet](https://github.com/schjonhaug/canary/) is a Bitcoin wallet watcher: it tracks addresses and descriptors and tells you when they move, reading everything from an Electrum server rather than from a third party. This package runs it in self-hosted mode, wires it to whichever Electrum server you run, and points its transaction links at your own block explorers if you have any.
+[Canary Wallet](https://github.com/schjonhaug/canary-wallet/) is a Bitcoin wallet watcher: it tracks addresses and descriptors and tells you when they move, reading everything from an Electrum server rather than from a third party. This package runs it in self-hosted mode, wires it to whichever Electrum server you run, and points its transaction links at your own block explorers if you have any.
 
-- **Upstream repo:** <https://github.com/schjonhaug/canary/>
+- **Upstream repo:** <https://github.com/schjonhaug/canary-wallet/>
 - **Wrapper repo:** <https://github.com/Start9-Community/canary-startos>
 
 ---
@@ -39,7 +39,7 @@ Two upstream images, unmodified — the application ships its front end and back
 
 | Property      | Value                                                       |
 | ------------- | ----------------------------------------------------------- |
-| Images        | `schjonhaug/canary-frontend`, `schjonhaug/canary-backend`   |
+| Images        | `schjonhaug/canary-wallet-frontend`, `schjonhaug/canary-wallet-backend`   |
 | Architectures | As published upstream; the manifest declares no restriction |
 | Entrypoint    | Each image's own, via `sdk.useEntrypoint()`                 |
 
@@ -102,7 +102,7 @@ Only addresses a browser can actually open are passed: the internal bridge and l
 
 **ntfy is optional until it is installed.** Detection via the UI host is not enough to call Provision Publisher: that action is `access: 'dependent'`, so the package adds ntfy to `current_dependencies` whenever the host exists, and drops it again when ntfy is removed. The declared floor is the first ntfy release whose Provision Publisher accepts dependent callers and returns a bridge publish URL. It does not require ntfy to remain running or healthy. Dependency registration and publisher provisioning share one reactive handler, so registration completes before provisioning even when ntfy is installed later.
 
-When ntfy is running, init calls Provision Publisher with publisher id `canary` and topic `canary`, caches the returned token, and `setupMain` passes `CANARY_NTFY_SERVER_URL`, `CANARY_NTFY_TOKEN`, and `CANARY_NTFY_TOPIC`. Those are defaults: settings saved in Canary Wallet stay authoritative, the wrapper exports the managed token for the application to use with the detected local integration, and wallet contacts are not created automatically. The publish URL is ntfy's live internal bridge address, not the retired `ntfy.startos` hostname. Removing ntfy clears the cache and the environment variables on the next reactive restart.
+When ntfy is running, init calls Provision Publisher with publisher id `canary-wallet` and topic `canary-wallet`, caches the returned token, and `setupMain` passes `CANARY_WALLET_NTFY_SERVER_URL`, `CANARY_WALLET_NTFY_TOKEN`, and `CANARY_WALLET_NTFY_TOPIC`. Those are defaults: settings saved in Canary Wallet stay authoritative, the wrapper exports the managed token for the application to use with the detected local integration, and wallet contacts are not created automatically. The publish URL is ntfy's live internal bridge address, not the retired `ntfy.startos` hostname. Removing ntfy clears the cache and the environment variables on the next reactive restart.
 
 ## Network Access and Interfaces
 
@@ -202,7 +202,7 @@ A restored instance comes back configured and raises no tasks. It does still nee
 
 ```yaml
 package_id: canary
-image: schjonhaug/canary-backend # plus schjonhaug/canary-frontend
+image: schjonhaug/canary-wallet-backend # plus schjonhaug/canary-wallet-frontend
 architectures: as published by the image # the manifest declares no restriction
 subcontainers:
   - backend-sub # the server; holds the volume
@@ -212,22 +212,22 @@ volumes:
 file_models:
   - store.json
 startos_managed_env_vars:
-  - CANARY_NETWORK
-  - CANARY_ELECTRUM_URL
-  - CANARY_BIND_ADDRESS
-  - CANARY_DATA_DIR
-  - CANARY_MODE
-  - CANARY_SELF_HOSTED_ADMIN_PASSWORD
-  - CANARY_SYNC_INTERVAL
+  - CANARY_WALLET_NETWORK
+  - CANARY_WALLET_ELECTRUM_URL
+  - CANARY_WALLET_BIND_ADDRESS
+  - CANARY_WALLET_DATA_DIR
+  - CANARY_WALLET_MODE
+  - CANARY_WALLET_SELF_HOSTED_ADMIN_PASSWORD
+  - CANARY_WALLET_SYNC_INTERVAL
   - JWT_SECRET
   - FRONTEND_URL
   - FRONTEND_URLS
-  - CANARY_MEMPOOL_URLS # only when mempool is installed
-  - CANARY_BTC_RPC_EXPLORER_URLS # only when bitcoin-explorer is installed
-  - CANARY_TX_EXPLORER_PLATFORM # only when either is
-  - CANARY_NTFY_SERVER_URL # ntfy bridge URL, only when ntfy is installed
-  - CANARY_NTFY_TOKEN # only after Provision Publisher succeeds
-  - CANARY_NTFY_TOPIC # only after Provision Publisher succeeds
+  - CANARY_WALLET_MEMPOOL_URLS # only when mempool is installed
+  - CANARY_WALLET_BTC_RPC_EXPLORER_URLS # only when bitcoin-explorer is installed
+  - CANARY_WALLET_TX_EXPLORER_PLATFORM # only when either is
+  - CANARY_WALLET_NTFY_SERVER_URL # ntfy bridge URL, only when ntfy is installed
+  - CANARY_WALLET_NTFY_TOKEN # only after Provision Publisher succeeds
+  - CANARY_WALLET_NTFY_TOPIC # only after Provision Publisher succeeds
   - API_URL # front end only
 dependencies:
   - fulcrum # required only when selected; kind: running

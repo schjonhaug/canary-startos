@@ -53,7 +53,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     .addOneshot('chown', {
       subcontainer: backendSub,
       exec: {
-        command: ['chown', '-R', 'canary:canary', mountpoint],
+        command: ['chown', '-R', 'canary-wallet:canary-wallet', mountpoint],
         user: 'root',
       },
       requires: [],
@@ -63,13 +63,13 @@ export const main = sdk.setupMain(async ({ effects }) => {
       exec: {
         command: sdk.useEntrypoint(),
         env: {
-          CANARY_NETWORK: 'mainnet',
-          CANARY_ELECTRUM_URL: electrumUrl,
-          CANARY_BIND_ADDRESS: `0.0.0.0:${serverPort}`,
-          CANARY_DATA_DIR: mountpoint,
-          CANARY_MODE: 'self-hosted',
-          CANARY_SELF_HOSTED_ADMIN_PASSWORD: store.adminPassword,
-          CANARY_SYNC_INTERVAL: '60',
+          CANARY_WALLET_NETWORK: 'mainnet',
+          CANARY_WALLET_ELECTRUM_URL: electrumUrl,
+          CANARY_WALLET_BIND_ADDRESS: `0.0.0.0:${serverPort}`,
+          CANARY_WALLET_DATA_DIR: mountpoint,
+          CANARY_WALLET_MODE: 'self-hosted',
+          CANARY_WALLET_SELF_HOSTED_ADMIN_PASSWORD: store.adminPassword,
+          CANARY_WALLET_SYNC_INTERVAL: '60',
           JWT_SECRET: store.jwtSecret,
           ...frontendOriginEnv,
           ...localExplorerEnv,
